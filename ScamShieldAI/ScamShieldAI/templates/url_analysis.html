@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}URL Security Analysis - ScamShield AI{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Page Header -->
+        <div class="text-center mb-4">
+            <h2><i class="fas fa-link text-primary me-2"></i>URL Security Analysis</h2>
+            <p class="text-muted">Enter a URL to check for phishing, malware, and other security threats</p>
+        </div>
+
+        <!-- Analysis Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" id="urlForm">
+                    <div class="mb-3">
+                        <label for="input" class="form-label">
+                            <i class="fas fa-globe me-1"></i>URL to Analyze
+                        </label>
+                        <input type="url" 
+                               class="form-control form-control-lg" 
+                               id="input" 
+                               name="input" 
+                               placeholder="https://example.com" 
+                               required>
+                        <div class="form-text">
+                            Enter a complete URL starting with http:// or https://
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" id="analyzeBtn">
+                        <i class="fas fa-search me-2"></i>Analyze URL
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if result %}
+        <!-- Analysis Results -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Analysis Results
+                    <small class="text-muted ms-2">{{ result.timestamp }}</small>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- URL Info -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Analyzed URL:</strong><br>
+                        <code class="text-break">{{ result.url }}</code>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Domain:</strong><br>
+                        <span class="badge bg-secondary">{{ result.domain }}</span>
+                    </div>
+                </div>
+
+                <!-- AI Analysis -->
+                {% if result.ai_analysis %}
+                    {% set ai = result.ai_analysis %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-robot me-2"></i>AI Security Analysis</h6>
+                        
+                        {% if ai.error %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {{ ai.message }}
+                            </div>
+                        {% else %}
+                            <!-- Risk Level Badge -->
+                            {% if ai.risk_level == "LOW" %}
+                                <span class="badge bg-success fs-6 mb-3">
+                                    <i class="fas fa-check me-1"></i>Risk Level: LOW
+                                </span>
+                            {% elif ai.risk_level == "MEDIUM" %}
+                                <span class="badge bg-warning fs-6 mb-3">
+                                    <i class="fas fa-exclamation me-1"></i>Risk Level: MEDIUM
+                                </span>
+                            {% elif ai.risk_level == "HIGH" %}
+                                <span class="badge bg-danger fs-6 mb-3">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Risk Level: HIGH
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary fs-6 mb-3">
+                                    <i class="fas fa-question me-1"></i>Risk Level: UNKNOWN
+                                </span>
+                            {% endif %}
+                            
+                            <div class="analysis-content">
+                                {{ ai.message | safe | replace('\n', '<br>') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- Additional Checks -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-clock me-2"></i>Domain Age</h6>
+                        {% if result.domain_age %}
+                            {% if result.domain_age < 30 %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Domain is only {{ result.domain_age }} days old (Recently registered)
+                                </div>
+                            {% elif result.domain_age < 365 %}
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Domain is {{ result.domain_age }} days old ({{ (result.domain_age / 30) | round(1) }} months)
+                                </div>
+                            {% else %}
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Domain is {{ result.domain_age }} days old ({{ (result.domain_age / 365) | round(1) }} years)
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-secondary">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Domain age information unavailable
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6><i class="fab fa-google me-2"></i>Google Safe Browsing</h6>
+                        {% if result.google_safe_flagged %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-shield-alt me-2"></i>
+                                <strong>Warning:</strong> Flagged by Google Safe Browsing
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-shield me-2"></i>
+                                Clean - No threats detected
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('url_analysis') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-2"></i>Analyze Another URL
+                    </a>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Safety Tips -->
+        <div class="alert alert-info mt-4">
+            <h6 class="alert-heading">
+                <i class="fas fa-shield-alt me-2"></i>URL Safety Tips
+            </h6>
+            <ul class="mb-0">
+                <li>Check for HTTPS encryption (secure lock icon)</li>
+                <li>Verify domain spelling and legitimacy</li>
+                <li>Be suspicious of shortened URLs</li>
+                <li>Don't enter personal information on suspicious sites</li>
+                <li>Trust your instincts - if something feels wrong, it probably is</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('urlForm').addEventListener('submit', function() {
+    const btn = document.getElementById('analyzeBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

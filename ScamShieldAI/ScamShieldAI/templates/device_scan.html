@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Device Security Scan - ScamShield AI{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Page Header -->
+        <div class="text-center mb-4">
+            <h2><i class="fas fa-laptop text-info me-2"></i>Device Security Scan</h2>
+            <p class="text-muted">Perform a basic security assessment of your device</p>
+        </div>
+
+        <!-- Scan Form -->
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                {% if not result %}
+                <div class="mb-3">
+                    <i class="fas fa-shield-alt fa-4x text-info mb-3"></i>
+                    <h5>Ready to scan your device</h5>
+                    <p class="text-muted">
+                        This scan will check basic security settings and provide recommendations
+                        to improve your device's security posture.
+                    </p>
+                </div>
+                <form method="POST" id="scanForm">
+                    <button type="submit" class="btn btn-info btn-lg" id="scanBtn">
+                        <i class="fas fa-search me-2"></i>Start Security Scan
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if result %}
+        <!-- Scan Results -->
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Device Security Report
+                    <small class="ms-2">{{ result.timestamp }}</small>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Risk Level -->
+                <div class="text-center mb-4">
+                    {% if result.risk_level == "LOW" %}
+                        <span class="badge bg-success fs-5">
+                            <i class="fas fa-check me-1"></i>Security Level: GOOD
+                        </span>
+                    {% elif result.risk_level == "MEDIUM" %}
+                        <span class="badge bg-warning fs-5">
+                            <i class="fas fa-exclamation me-1"></i>Security Level: MODERATE
+                        </span>
+                    {% elif result.risk_level == "HIGH" %}
+                        <span class="badge bg-danger fs-5">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Security Level: ATTENTION NEEDED
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary fs-5">
+                            <i class="fas fa-question me-1"></i>Security Level: UNKNOWN
+                        </span>
+                    {% endif %}
+                </div>
+
+                <!-- Scan Results -->
+                <div class="scan-results">
+                    <h6><i class="fas fa-clipboard-list me-2"></i>Scan Results</h6>
+                    <div class="bg-dark p-3 rounded">
+                        <pre class="text-light mb-0">{{ result.scan_output }}</pre>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('device_scan') }}" class="btn btn-outline-info">
+                        <i class="fas fa-refresh me-2"></i>Run Another Scan
+                    </a>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Security Recommendations -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="alert alert-success">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-check-circle me-2"></i>Best Practices
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>Keep operating system updated</li>
+                        <li>Use strong, unique passwords</li>
+                        <li>Enable automatic security updates</li>
+                        <li>Install reputable antivirus software</li>
+                        <li>Enable firewall protection</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-warning">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Red Flags
+                    </h6>
+                    <ul class="mb-0 small">
+                        <li>Outdated software or OS</li>
+                        <li>Running as administrator/root</li>
+                        <li>Disabled security features</li>
+                        <li>Suspicious network activity</li>
+                        <li>Unknown installed applications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Security Info -->
+        <div class="alert alert-info">
+            <h6 class="alert-heading">
+                <i class="fas fa-info-circle me-2"></i>About This Scan
+            </h6>
+            <p class="mb-0">
+                This is a basic security assessment that checks fundamental security settings.
+                For comprehensive security analysis, consider using dedicated security software
+                or consulting with cybersecurity professionals.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('scanForm')?.addEventListener('submit', function() {
+    const btn = document.getElementById('scanBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Scanning Device...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Phone Number Verification - ScamShield AI{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Page Header -->
+        <div class="text-center mb-4">
+            <h2><i class="fas fa-phone text-success me-2"></i>Phone Number Verification</h2>
+            <p class="text-muted">Check phone numbers for scam patterns and fraudulent activity</p>
+        </div>
+
+        <!-- Analysis Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" id="phoneForm">
+                    <div class="mb-3">
+                        <label for="input" class="form-label">
+                            <i class="fas fa-phone-alt me-1"></i>Phone Number to Verify
+                        </label>
+                        <input type="tel" 
+                               class="form-control form-control-lg" 
+                               id="input" 
+                               name="input" 
+                               placeholder="+1 (555) 123-4567" 
+                               required>
+                        <div class="form-text">
+                            Enter a phone number in any format (international or domestic)
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg" id="verifyBtn">
+                        <i class="fas fa-search me-2"></i>Verify Phone Number
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if result %}
+        <!-- Analysis Results -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Verification Results
+                    <small class="text-muted ms-2">{{ result.timestamp }}</small>
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Phone Info -->
+                <div class="mb-4">
+                    <strong>Analyzed Phone Number:</strong><br>
+                    <code class="fs-5">{{ result.phone }}</code>
+                </div>
+
+                <!-- AI Analysis -->
+                {% if result.ai_analysis %}
+                    {% set ai = result.ai_analysis %}
+                    <div class="mb-4">
+                        <h6><i class="fas fa-robot me-2"></i>AI Scam Analysis</h6>
+                        
+                        {% if ai.error %}
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {{ ai.message }}
+                            </div>
+                        {% else %}
+                            <!-- Risk Level Badge -->
+                            {% if ai.risk_level == "LOW" %}
+                                <span class="badge bg-success fs-6 mb-3">
+                                    <i class="fas fa-check me-1"></i>Risk Level: LOW
+                                </span>
+                            {% elif ai.risk_level == "MEDIUM" %}
+                                <span class="badge bg-warning fs-6 mb-3">
+                                    <i class="fas fa-exclamation me-1"></i>Risk Level: MEDIUM
+                                </span>
+                            {% elif ai.risk_level == "HIGH" %}
+                                <span class="badge bg-danger fs-6 mb-3">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Risk Level: HIGH
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary fs-6 mb-3">
+                                    <i class="fas fa-question me-1"></i>Risk Level: UNKNOWN
+                                </span>
+                            {% endif %}
+                            
+                            <div class="analysis-content">
+                                {{ ai.message | safe | replace('\n', '<br>') }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('phone_verification') }}" class="btn btn-outline-success">
+                        <i class="fas fa-plus me-2"></i>Check Another Number
+                    </a>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Phone Scam Warning Signs -->
+        <div class="alert alert-warning mt-4">
+            <h6 class="alert-heading">
+                <i class="fas fa-exclamation-triangle me-2"></i>Phone Scam Warning Signs
+            </h6>
+            <ul class="mb-0">
+                <li><strong>Urgency tactics:</strong> Pressure to act immediately</li>
+                <li><strong>Personal information requests:</strong> Asking for SSN, passwords, or account details</li>
+                <li><strong>Money requests:</strong> Asking for payments, gift cards, or wire transfers</li>
+                <li><strong>Robocalls:</strong> Automated messages with suspicious offers</li>
+                <li><strong>Spoofed numbers:</strong> Calls appearing to come from legitimate organizations</li>
+            </ul>
+        </div>
+
+        <!-- Protection Tips -->
+        <div class="alert alert-info mt-3">
+            <h6 class="alert-heading">
+                <i class="fas fa-shield-alt me-2"></i>Protection Tips
+            </h6>
+            <ul class="mb-0">
+                <li>Never give personal information over the phone unless you initiated the call</li>
+                <li>Verify caller identity by calling the organization directly</li>
+                <li>Register your number with the Do Not Call Registry</li>
+                <li>Use call-blocking apps or features</li>
+                <li>Report suspicious calls to authorities</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('phoneForm').addEventListener('submit', function() {
+    const btn = document.getElementById('verifyBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

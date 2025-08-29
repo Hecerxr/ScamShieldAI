@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Hero Section -->
+        <div class="text-center mb-5 hero-section">
+            <div class="hero-background"></div>
+            <h1 class="display-3 mb-4 hero-title">
+                <i class="fas fa-shield-alt me-3" style="color: #3b82f6; text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);"></i>
+                ScamShield AI
+            </h1>
+            <p class="lead mb-4 hero-subtitle">
+                Advanced cybersecurity threat analysis powered by artificial intelligence.<br>
+                <span class="text-primary fw-bold">Protect yourself from scams, phishing, and malicious content.</span>
+            </p>
+            <div class="hero-stats d-flex justify-content-center gap-4 mb-4">
+                <div class="stat-item">
+                    <div class="stat-number text-primary">AI</div>
+                    <div class="stat-label">Powered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number text-success">24/7</div>
+                    <div class="stat-label">Protection</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number text-info">Real-time</div>
+                    <div class="stat-label">Analysis</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Options -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card h-100 border-primary">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-link fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">URL Analysis</h5>
+                        <p class="card-text">
+                            Analyze websites and links for phishing, malware, and other security threats.
+                        </p>
+                        <a href="{{ url_for('url_analysis') }}" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Analyze URL
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-success">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-phone fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">Phone Verification</h5>
+                        <p class="card-text">
+                            Check phone numbers for scam patterns and fraudulent activity.
+                        </p>
+                        <a href="{{ url_for('phone_verification') }}" class="btn btn-success">
+                            <i class="fas fa-phone-alt me-2"></i>Check Phone
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-info">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-laptop fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title">Device Security</h5>
+                        <p class="card-text">
+                            Perform basic security scan of your device and get safety recommendations.
+                        </p>
+                        <a href="{{ url_for('device_scan') }}" class="btn btn-info">
+                            <i class="fas fa-shield-alt me-2"></i>Scan Device
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-star me-2"></i>Key Features
+                </h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-brain text-primary me-3 fa-lg"></i>
+                            <div>
+                                <h6 class="mb-1">AI-Powered Analysis</h6>
+                                <small class="text-muted">Advanced machine learning for threat detection</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock text-success me-3 fa-lg"></i>
+                            <div>
+                                <h6 class="mb-1">Real-Time Scanning</h6>
+                                <small class="text-muted">Instant analysis and threat assessment</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-database text-info me-3 fa-lg"></i>
+                            <div>
+                                <h6 class="mb-1">Comprehensive Database</h6>
+                                <small class="text-muted">Google Safe Browsing and WHOIS integration</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-chart-line text-warning me-3 fa-lg"></i>
+                            <div>
+                                <h6 class="mb-1">Risk Assessment</h6>
+                                <small class="text-muted">Clear LOW/MEDIUM/HIGH risk classifications</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="alert alert-info">
+            <h5 class="alert-heading">
+                <i class="fas fa-lightbulb me-2"></i>Security Tips
+            </h5>
+            <ul class="mb-0">
+                <li>Always verify suspicious links before clicking</li>
+                <li>Be cautious of unsolicited phone calls requesting personal information</li>
+                <li>Keep your devices updated with the latest security patches</li>
+                <li>Use strong, unique passwords for all your accounts</li>
+                <li>Enable two-factor authentication where possible</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
